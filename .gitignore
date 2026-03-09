@@ -1,24 +1,41 @@
+# Built artifacts
+build/
+bin/
+gen/
+out/
+
+# Gradle
+.gradle/
+gradlew.bat
+
+# IDE - Android Studio / IntelliJ
+.idea/
 *.iml
-.gradle
-/local.properties
-/.idea/shelf
-/.idea/workspace.xml
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+*.iws
+*.ipr
+
+# Local configuration
 local.properties
-# Keystore files
+.DS_Store
+
+# Log files
+*.log
+
+# Captures and profiling
+captures/
+*.hprof
+
+# External Native Build
+.externalNativeBuild/
+.cxx/
+
+# Signing files
 *.jks
 *.keystore
 *.p12
+
 # Google Services
 google-services.json
-# Generated KSP files
-build/generated/ksp/
+
+# KSP generated files
+**/build/generated/ksp/
