@@ -1,7 +1,6 @@
 package com.jkm.recipeapp.feature.recipe.ui.recipeList
 
 import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jkm.recipeapp.feature.recipe.domain.FlowOfRecipes
@@ -22,8 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecipeListViewModel @Inject constructor(
-    private val flowOfRecipes: FlowOfRecipes,
-    private val savedStateHandle: SavedStateHandle
+    private val flowOfRecipes: FlowOfRecipes
 ) : ViewModel() {
 
     private val refreshTrigger = MutableSharedFlow<Unit>(replay = 1).apply {
@@ -36,16 +34,14 @@ class RecipeListViewModel @Inject constructor(
             flow {
                 emit(RecipeListState.Loading)
                 emitAll(flowOfRecipes().map { RecipeListState.Success(it) })
+            }.catch { e ->
+                emit(RecipeListState.Error(e.message ?: "Unknown error"))
             }
         }
         .onEach { Log.d("JKM", "State update: $it") }
-        .catch { e ->
-            Log.e("JKM", "Error fetching recipes", e)
-            emit(RecipeListState.Error(e.message ?: "Unknown error"))
-        }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
+            started = SharingStarted.Lazily,
             initialValue = RecipeListState.Loading
         )
 
