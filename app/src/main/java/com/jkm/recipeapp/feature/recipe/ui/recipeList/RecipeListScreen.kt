@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -39,21 +40,85 @@ fun RecipeListScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    RecipeListScreen(
+        modifier = modifier,
+        state = state,
+        refresh = viewModel::refresh
+    )
+}
+
+@Composable
+fun RecipeListScreen(
+    modifier: Modifier = Modifier,
+    state: RecipeListState,
+    refresh: () -> Unit,
+) {
+    RecipeListContent(
+        state = state,
+        onRetry = refresh,
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun RecipeListContent(
+    state: RecipeListState,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Box(modifier = modifier.fillMaxSize()) {
-        when (val currentState = state) {
-            is RecipeListState.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
-            is RecipeListState.Success -> {
-                RecipeGrid(recipes = currentState.recipes)
-            }
+        when (state) {
+            is RecipeListState.Loading -> CircularProgressIndicator(
+                modifier = Modifier.align(
+                    Alignment.Center
+                )
+            )
+
+            is RecipeListState.Success -> RecipeListContent(
+                recipes = state.recipes,
+                modifier = Modifier.fillMaxSize()
+            )
+
             is RecipeListState.Error -> {
-                Text(
-                    text = currentState.message,
-                    color = MaterialTheme.colorScheme.error,
+                ErrorScreen(
+                    message = state.message,
+                    onRetry = onRetry,
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
+        }
+    }
+}
+
+
+@Composable
+private fun RecipeListContent(
+    recipes: List<Recipe>,
+    modifier: Modifier = Modifier
+) {
+    RecipeGrid(
+        recipes = recipes,
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun ErrorScreen(
+    message: String,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            text = message,
+            color = MaterialTheme.colorScheme.error
+        )
+        Button(onClick = onRetry) {
+            Text("Retry")
         }
     }
 }
@@ -90,9 +155,9 @@ fun RecipeCard(
             AsyncImage(
                 model =
                     ImageRequest.Builder(LocalContext.current)
-                    .data(recipe.thumbnailUrl)
-                    .crossfade(true)
-                    .build(),
+                        .data(recipe.thumbnailUrl)
+                        .crossfade(true)
+                        .build(),
                 contentDescription = recipe.thumbnailAlt,
                 modifier = Modifier
                     .fillMaxWidth()
