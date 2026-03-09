@@ -11,5 +11,7 @@ import javax.inject.Inject
 class RecipeRepository @Inject constructor(
     private val recipeApi: RecipeApi
 ): FlowOfRecipes {
-    override suspend fun flowOfRecipes(): Flow<List<Recipe>> = flow { emit( recipeApi.listRecipes().toDomain()) }
+    override suspend fun flowOfRecipes(): Flow<List<Recipe>> = flow {
+        emit(recipeApi.listRecipes().toDomain())
+    }
 }

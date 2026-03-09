@@ -43,19 +43,19 @@ fun RecipeListScreen(
     RecipeListScreen(
         modifier = modifier,
         state = state,
-        refresh = viewModel::refresh
+        onIntent = viewModel::onIntent
     )
 }
 
 @Composable
 fun RecipeListScreen(
-    modifier: Modifier = Modifier,
     state: RecipeListState,
-    refresh: () -> Unit,
+    onIntent: (RecipeListIntent) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     RecipeListContent(
         state = state,
-        onRetry = refresh,
+        onIntent = onIntent,
         modifier = modifier
     )
 }
@@ -63,7 +63,7 @@ fun RecipeListScreen(
 @Composable
 private fun RecipeListContent(
     state: RecipeListState,
-    onRetry: () -> Unit,
+    onIntent: (RecipeListIntent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -82,7 +82,7 @@ private fun RecipeListContent(
             is RecipeListState.Error -> {
                 ErrorScreen(
                     message = state.message,
-                    onRetry = onRetry,
+                    onRetry = { onIntent(RecipeListIntent.Refresh) },
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
