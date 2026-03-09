@@ -1,9 +1,8 @@
 package com.jkm.recipeapp.feature.recipe.domain
 
 // TODO: for the mappers, do  I want the toDomain or toDomainX?
-
 // TODO: decide on what you'd consider mandatory properties versus nice to have
-
+// TODO: Finalise domain modelling
 data class Recipe(
     val title: String,
     val description: String,

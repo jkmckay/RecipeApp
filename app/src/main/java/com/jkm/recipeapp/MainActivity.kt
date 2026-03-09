@@ -5,12 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.jkm.recipeapp.feature.recipe.ui.recipeList.RecipeListScreen
 import com.jkm.recipeapp.ui.theme.RecipeAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,28 +19,33 @@ class MainActivity : ComponentActivity() {
         setContent {
             RecipeAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+//                    Greeting(
+//                        name = "Android",
+//                        modifier = Modifier.padding(innerPadding),
+//                    )
+                    RecipeListScreen()
                 }
             }
         }
     }
 }
+// TODO: Decide on Enro or Compose nav
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RecipeAppTheme {
-        Greeting("Android")
-    }
-}
+//@Composable
+//fun Greeting(
+//    name: String,
+//    modifier: Modifier = Modifier,
+//) {
+//    Text(
+//        text = "Hello $name!",
+//        modifier = modifier,
+//    )
+//}
+//
+//@Preview(showBackground = true)
+//@Composable
+//fun GreetingPreview() {
+//    RecipeAppTheme {
+//        Greeting("Android")
+//    }
+//}
