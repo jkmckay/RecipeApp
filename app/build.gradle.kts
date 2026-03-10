@@ -69,10 +69,6 @@ dependencies {
 
     implementation(libs.androidx.compose.material.icons.core)
 
-    // Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.kotlin.serialization)
-
     // Hilt
     implementation(libs.dagger.hilt.android)
     ksp(libs.dagger.hilt.compiler)

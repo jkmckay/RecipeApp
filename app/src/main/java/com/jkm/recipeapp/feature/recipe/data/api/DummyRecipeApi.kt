@@ -11,8 +11,7 @@ const val RECIPE_SAMPLE_FILENAME = "recipesSample.json"
 class DummyRecipeApi
     @Inject
     constructor(
-        // TODO: Sort this warning
-        @param:ApplicationContext private val context: Context,
+        @ApplicationContext private val context: Context,
         private val json: Json,
     ) : RecipeApi {
         override suspend fun listRecipes(): RecipeResponse {
