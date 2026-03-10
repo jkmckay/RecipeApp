@@ -1,7 +1,9 @@
 package com.jkm.recipeapp.feature.recipe.data
 
 import com.jkm.recipeapp.feature.recipe.data.api.RecipeApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -9,10 +11,13 @@ import org.junit.Test
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class RecipeRepositoryTest {
+    private val testDispatcher = UnconfinedTestDispatcher()
+
     @Test
     fun `flowOfRecipes fetches and maps recipes correctly`() =
-        runTest {
+        runTest(testDispatcher) {
             // Arrange
             val recipesDto =
                 RecipeResponse(
@@ -23,7 +28,7 @@ class RecipeRepositoryTest {
                         ),
                 )
             val mockApi = mock<RecipeApi> { on { listRecipes() } doReturn recipesDto }
-            val repository = RecipeRepository(mockApi)
+            val repository = RecipeRepository(mockApi, testDispatcher, testDispatcher)
 
             // Act
             val result = repository.flowOfRecipes().first()
@@ -38,11 +43,11 @@ class RecipeRepositoryTest {
 
     @Test
     fun `flowOfRecipes handles empty list`() =
-        runTest {
+        runTest(testDispatcher) {
             // Arrange
             val recipesDto = RecipeResponse(recipes = emptyList())
             val mockApi = mock<RecipeApi> { on { listRecipes() } doReturn recipesDto }
-            val repository = RecipeRepository(mockApi)
+            val repository = RecipeRepository(mockApi, testDispatcher, testDispatcher)
 
             // Act
             val result = repository.flowOfRecipes().first()
@@ -53,7 +58,7 @@ class RecipeRepositoryTest {
 
     @Test
     fun `flowOfRecipes filters out malformed data`() =
-        runTest {
+        runTest(testDispatcher) {
             // Arrange
             val recipesDto =
                 RecipeResponse(
@@ -64,7 +69,7 @@ class RecipeRepositoryTest {
                         ),
                 )
             val mockApi = mock<RecipeApi> { on { listRecipes() } doReturn recipesDto }
-            val repository = RecipeRepository(mockApi)
+            val repository = RecipeRepository(mockApi, testDispatcher, testDispatcher)
 
             // Act
             val result = repository.flowOfRecipes().first()
@@ -76,7 +81,7 @@ class RecipeRepositoryTest {
 
     @Test
     fun `flowOfRecipesByTotalTime sorts recipes by sum of prep and cooking minutes`() =
-        runTest {
+        runTest(testDispatcher) {
             // Arrange
             val recipesDto =
                 RecipeResponse(
@@ -88,7 +93,7 @@ class RecipeRepositoryTest {
                         ),
                 )
             val mockApi = mock<RecipeApi> { on { listRecipes() } doReturn recipesDto }
-            val repository = RecipeRepository(mockApi)
+            val repository = RecipeRepository(mockApi, testDispatcher, testDispatcher)
 
             // Act
             val result = repository.flowOfRecipesByTotalTime().first()
