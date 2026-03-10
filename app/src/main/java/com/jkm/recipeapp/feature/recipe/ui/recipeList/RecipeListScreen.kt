@@ -26,8 +26,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
@@ -35,15 +35,17 @@ import com.jkm.recipeapp.feature.recipe.domain.Recipe
 
 @Composable
 fun RecipeListScreen(
+    onRecipeClick: (Recipe) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: RecipeListViewModel = viewModel()
+    viewModel: RecipeListViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     RecipeListScreen(
         modifier = modifier,
         state = state,
-        onIntent = viewModel::onIntent
+        onIntent = viewModel::onIntent,
+        onRecipeClick = onRecipeClick
     )
 }
 
@@ -51,11 +53,13 @@ fun RecipeListScreen(
 fun RecipeListScreen(
     state: RecipeListState,
     onIntent: (RecipeListIntent) -> Unit,
+    onRecipeClick: (Recipe) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     RecipeListContent(
         state = state,
         onIntent = onIntent,
+        onRecipeClick = onRecipeClick,
         modifier = modifier
     )
 }
@@ -64,6 +68,7 @@ fun RecipeListScreen(
 private fun RecipeListContent(
     state: RecipeListState,
     onIntent: (RecipeListIntent) -> Unit,
+    onRecipeClick: (Recipe) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -76,6 +81,7 @@ private fun RecipeListContent(
 
             is RecipeListState.Success -> RecipeListContent(
                 recipes = state.recipes,
+                onRecipeClick = onRecipeClick,
                 modifier = Modifier.fillMaxSize()
             )
 
@@ -94,10 +100,12 @@ private fun RecipeListContent(
 @Composable
 private fun RecipeListContent(
     recipes: List<Recipe>,
+    onRecipeClick: (Recipe) -> Unit,
     modifier: Modifier = Modifier
 ) {
     RecipeGrid(
         recipes = recipes,
+        onRecipeClick = onRecipeClick,
         modifier = modifier
     )
 }
@@ -126,6 +134,7 @@ private fun ErrorScreen(
 @Composable
 fun RecipeGrid(
     recipes: List<Recipe>,
+    onRecipeClick: (Recipe) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
@@ -136,7 +145,10 @@ fun RecipeGrid(
         modifier = modifier
     ) {
         items(recipes) { recipe ->
-            RecipeCard(recipe = recipe)
+            RecipeCard(
+                recipe = recipe,
+                onClick = { onRecipeClick(recipe) }
+            )
         }
     }
 }
@@ -144,10 +156,12 @@ fun RecipeGrid(
 @Composable
 fun RecipeCard(
     recipe: Recipe,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
     Card(
+        onClick = onClick,
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.medium
     ) {
