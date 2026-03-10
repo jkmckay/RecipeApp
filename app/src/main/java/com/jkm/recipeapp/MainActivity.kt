@@ -7,6 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
@@ -23,38 +25,43 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val windowSizeClass = calculateWindowSizeClass(this)
             RecipeAppTheme {
-                val navigationState = rememberNavigationState(
-                    startRoute = RecipeList,
-                    topLevelRoutes = setOf(RecipeList)
-                )
+                val navigationState =
+                    rememberNavigationState(
+                        startRoute = RecipeList,
+                        topLevelRoutes = setOf(RecipeList),
+                    )
                 val navigator = remember { Navigator(navigationState) }
 
-                val entryProvider = entryProvider {
-                    entry<RecipeList> {
-                        RecipeListScreen(
-                            onRecipeClick = { recipe ->
-                                navigator.navigate(RecipeDetail(recipeTitle = recipe.title))
-                            }
-                        )
+                val entryProvider =
+                    entryProvider {
+                        entry<RecipeList> {
+                            RecipeListScreen(
+                                windowWidthSizeClass = windowSizeClass.widthSizeClass,
+                                onRecipeClick = { recipe ->
+                                    navigator.navigate(RecipeDetail(recipeTitle = recipe.title))
+                                },
+                            )
+                        }
+                        entry<RecipeDetail> { key ->
+                            RecipeDetailScreen(
+                                recipeTitle = key.recipeTitle,
+                                onBackClick = { navigator.goBack() },
+                            )
+                        }
                     }
-                    entry<RecipeDetail> { key ->
-                        RecipeDetailScreen(
-                            recipeTitle = key.recipeTitle,
-                            onBackClick = { navigator.goBack() }
-                        )
-                    }
-                }
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavDisplay(
                         entries = navigationState.toEntries(entryProvider),
                         onBack = { navigator.goBack() },
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
                     )
                 }
             }

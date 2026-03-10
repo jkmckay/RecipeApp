@@ -1,30 +1,41 @@
 package com.jkm.recipeapp.feature.recipe.domain
 
-// TODO: for the mappers, do  I want the toDomain or toDomainX?
-// TODO: decide on what you'd consider mandatory properties versus nice to have
-// TODO: Finalise domain modelling
 data class Recipe(
     val title: String,
     val description: String,
-    val thumbnailUrl: String,
-    val thumbnailAlt: String,
-    val details: RecipeDetail, // JKM - at what point do we say so much is missing that we should bin it?
-    val ingredients: Ingredients,
+    val thumbnail: Thumbnail,
+    val details: RecipeDetails,
+    val ingredients: List<Ingredient>,
 )
 
-// JKM - would pairs or some other modeling be better? Not showing values without their label would be good.
-data class RecipeDetail(
-    val amountLabel: String? = null,
-    val amountNumber: String? = null,
-    val prepLabel: String? = null,
-    val prepNote: String? = null,
-    val prepTime: String? = null,
-    val cookingLabel: String? = null,
-    val cookingTime: String? = null,
-    val cookTimeMinutes: String? = null,
-    val prepTimeMinutes: String? = null,
+data class RecipeDetails(
+    val amount: Amount,
+    val prep: PrepTime,
+    val cookingTime: CookingTime,
 )
-typealias Ingredients = List<Ingredient>
+
+data class Thumbnail(
+    val url: String,
+    val altText: String,
+)
+
+data class Amount(
+    val label: String,
+    val value: Int,
+)
+
+data class PrepTime(
+    val label: String,
+    val note: String?,
+    val time: String,
+    val minutes: Int,
+)
+
+data class CookingTime(
+    val label: String,
+    val time: String,
+    val minutes: Int,
+)
 
 @JvmInline
 value class Ingredient(

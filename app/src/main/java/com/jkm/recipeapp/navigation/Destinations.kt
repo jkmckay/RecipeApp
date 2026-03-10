@@ -7,4 +7,6 @@ import kotlinx.serialization.Serializable
 object RecipeList : NavKey
 
 @Serializable
-data class RecipeDetail(val recipeTitle: String) : NavKey
+data class RecipeDetail(
+    val recipeTitle: String,
+) : NavKey
