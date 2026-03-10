@@ -3,9 +3,12 @@ package com.jkm.recipeapp.feature.recipe.ui.recipeList
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,8 +21,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +32,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -119,7 +126,9 @@ private fun RecipeListContent(
 ) {
     when (windowWidthSizeClass) {
         WindowWidthSizeClass.Compact -> {
-            RecipeDetail(recipes.first())
+            if (recipes.isNotEmpty()) {
+                RecipeDetail(recipes.first())
+            }
         }
 
         else -> {
@@ -142,7 +151,27 @@ private fun RecipeDetail(
             modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = recipe.title,
+                style = MaterialTheme.typography.displaySmall,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = recipe.description,
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
         AsyncImage(
             model =
                 ImageRequest
@@ -150,41 +179,102 @@ private fun RecipeDetail(
                     .data(recipe.thumbnail.url)
                     .crossfade(true)
                     .build(),
-            contentDescription = recipe.thumbnail.url,
+            contentDescription = recipe.thumbnail.altText,
             modifier =
                 Modifier
                     .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
                     .aspectRatio(16f / 9f),
             contentScale = ContentScale.Crop,
         )
 
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = recipe.title,
-                style = MaterialTheme.typography.headlineMedium,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = recipe.description,
-                style = MaterialTheme.typography.bodyLarge,
-            )
+        Spacer(modifier = Modifier.height(24.dp))
 
-            // Add more details like ingredients, instructions if available in domain model
-            if (recipe.ingredients.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Ingredients",
-                    style = MaterialTheme.typography.titleLarge,
-                )
-                recipe.ingredients.forEach { ingredient ->
+        HorizontalDivider(modifier = Modifier.padding(horizontal = 24.dp))
+
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+                    .height(IntrinsicSize.Min),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+        ) {
+            RecipeSummaryItem(
+                label = recipe.details.amount.label,
+                value =
+                    recipe.details.amount.value
+                        .toString(),
+                modifier = Modifier.weight(1f),
+            )
+            VerticalDivider(modifier = Modifier.fillMaxHeight())
+            RecipeSummaryItem(
+                label = recipe.details.prep.label,
+                value = recipe.details.prep.time,
+                modifier = Modifier.weight(1f),
+            )
+            VerticalDivider(modifier = Modifier.fillMaxHeight())
+            RecipeSummaryItem(
+                label = recipe.details.cookingTime.label,
+                value = recipe.details.cookingTime.time,
+                modifier = Modifier.weight(1f),
+            )
+        }
+
+        HorizontalDivider(modifier = Modifier.padding(horizontal = 24.dp))
+
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+        ) {
+            Text(
+                text = "Ingredients",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            recipe.ingredients.forEach { ingredient ->
+                Row(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.Top,
+                ) {
                     Text(
-                        text = "• ${ingredient.name}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(vertical = 4.dp),
+                        text = "›",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(end = 8.dp),
+                    )
+                    Text(
+                        text = ingredient.name,
+                        style = MaterialTheme.typography.bodyLarge,
                     )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun RecipeSummaryItem(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+        )
     }
 }
 
