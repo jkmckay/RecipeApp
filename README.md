@@ -7,7 +7,7 @@
 4. "Clean Architecture" - I'm using a heavily cut down version that primarily takes advantage of the concept of Use Cases, which are represented by the fun interfaces in the domain layer.  Given the sample, it's very minor, but the idea is that the "use cases" encapsulate business logic within them and keep them strictly compartmentalised. 
 5. Mappers - I've approached  transforming the DTOs to domain models in a very strict manner. From the json, nullability isn't explicit and as such I've treated every DTO property as nullable. For the domain representation however, determining what properties are "optional" is very much a business question. If there's no prep or cook time, would the recipe be considered malformed? What if there is a single null value ingredient at the end of the list? As such, if there's a Recipe that's missing properties where I cannot determine its validity, I treat it as malformed. I've also catered for empty lists, lists of nulls, etc.
 ## Trade-offs
-* With the time constraints, which I already exceeded - UI was heavily de-prioritised in favour of architecture/project structure/state management.
+* With the time constraints, which I already exceeded - UI was heavily de-prioritised in favour of architecture/project structure/state management/lifecycle management.
 * Unhappy paths/error scenario only accessible through code.
 
 ## What I would improve with more time
