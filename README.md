@@ -11,6 +11,7 @@
 * Unhappy paths/error scenario only accessible through code.
 
 ## What I would improve with more time
+* I would change my UseCase setup slightly
 * String resources
 * More robust url handling (re; Coil)
 * Compose Previews
