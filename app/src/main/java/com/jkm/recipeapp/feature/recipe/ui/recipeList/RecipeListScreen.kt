@@ -45,7 +45,6 @@ import com.jkm.recipeapp.feature.recipe.domain.Recipe
 
 @Composable
 fun RecipeListScreen(
-    onRecipeClick: (Recipe) -> Unit,
     modifier: Modifier = Modifier,
     windowWidthSizeClass: WindowWidthSizeClass,
     viewModel: RecipeListViewModel = hiltViewModel(),
@@ -56,7 +55,6 @@ fun RecipeListScreen(
         modifier = modifier,
         state = state,
         onIntent = viewModel::onIntent,
-        onRecipeClick = onRecipeClick,
         windowWidthSizeClass = windowWidthSizeClass,
     )
 }
@@ -65,14 +63,12 @@ fun RecipeListScreen(
 fun RecipeListScreen(
     state: RecipeListState,
     onIntent: (RecipeListIntent) -> Unit,
-    onRecipeClick: (Recipe) -> Unit,
     windowWidthSizeClass: WindowWidthSizeClass,
     modifier: Modifier = Modifier,
 ) {
     RecipeListContent(
         state = state,
         onIntent = onIntent,
-        onRecipeClick = onRecipeClick,
         windowWidthSizeClass = windowWidthSizeClass,
         modifier = modifier,
     )
@@ -82,7 +78,6 @@ fun RecipeListScreen(
 private fun RecipeListContent(
     state: RecipeListState,
     onIntent: (RecipeListIntent) -> Unit,
-    onRecipeClick: (Recipe) -> Unit,
     windowWidthSizeClass: WindowWidthSizeClass,
     modifier: Modifier = Modifier,
 ) {
@@ -100,7 +95,6 @@ private fun RecipeListContent(
             is RecipeListState.Success -> {
                 RecipeListContent(
                     recipes = state.recipes,
-                    onRecipeClick = onRecipeClick,
                     windowWidthSizeClass = windowWidthSizeClass,
                     modifier = Modifier.fillMaxSize(),
                 )
@@ -120,7 +114,6 @@ private fun RecipeListContent(
 @Composable
 private fun RecipeListContent(
     recipes: List<Recipe>,
-    onRecipeClick: (Recipe) -> Unit,
     windowWidthSizeClass: WindowWidthSizeClass,
     modifier: Modifier = Modifier,
 ) {
@@ -134,7 +127,6 @@ private fun RecipeListContent(
         else -> {
             RecipeGrid(
                 recipes = recipes,
-                onRecipeClick = onRecipeClick,
                 modifier = modifier,
             )
         }
@@ -302,7 +294,6 @@ private fun ErrorScreen(
 @Composable
 fun RecipeGrid(
     recipes: List<Recipe>,
-    onRecipeClick: (Recipe) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
@@ -315,7 +306,6 @@ fun RecipeGrid(
         items(recipes) { recipe ->
             RecipeCard(
                 recipe = recipe,
-                onClick = { onRecipeClick(recipe) },
             )
         }
     }
@@ -324,11 +314,9 @@ fun RecipeGrid(
 @Composable
 fun RecipeCard(
     recipe: Recipe,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
-        onClick = onClick,
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.medium,
     ) {

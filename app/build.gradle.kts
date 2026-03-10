@@ -69,11 +69,6 @@ dependencies {
 
     implementation(libs.androidx.compose.material.icons.core)
 
-    // Navigation 3
-    implementation(libs.androidx.navigation3.runtime)
-    implementation(libs.androidx.navigation3.ui)
-    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
-
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.retrofit.kotlin.serialization)
