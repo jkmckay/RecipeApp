@@ -17,6 +17,8 @@ ksp = "2.3.6"
 ktlint = "14.1.0"
 composeRules = "0.0.26"
 nav3 = "1.0.1"
+coroutinesTest = "1.10.2"
+mockitoKotlin = "6.2.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -60,6 +62,10 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 
 # Ktlint Compose Rules
 ktlint-compose-rules = { group = "com.twitter.compose.rules", name = "ktlint", version.ref = "composeRules" }
+
+# Test dependencies
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

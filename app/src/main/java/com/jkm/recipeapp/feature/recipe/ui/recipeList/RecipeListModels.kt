@@ -16,6 +16,4 @@ sealed interface RecipeListState {
 
 sealed interface RecipeListIntent {
     data object Refresh : RecipeListIntent
-
-//    data object SelectItem : RecipeListIntent
 }

@@ -15,30 +15,26 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-
     @Provides
     @Singleton
-    fun provideJson(): Json = Json {
-        ignoreUnknownKeys = true
-        coerceInputValues = true
-    }
+    fun provideJson(): Json =
+        Json {
+            ignoreUnknownKeys = true
+            coerceInputValues = true
+        }
 
     @Provides
     @Singleton
     fun provideRetrofit(json: Json): Retrofit {
         val contentType = "application/json".toMediaType()
-        return Retrofit.Builder()
+        return Retrofit
+            .Builder()
             .baseUrl("https://dummy.api/") // Base URL is required but ignored if you use @Url
             .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
 
-    //    fun provideRecipeApi(retrofit: Retrofit): RecipeApi {
-//        return retrofit.create(RecipeApi::class.java)
-//    }
     @Provides
     @Singleton
-    fun provideRecipeApi(dummyRecipeApi: DummyRecipeApi): RecipeApi {
-        return dummyRecipeApi
-    }
+    fun provideRecipeApi(dummyRecipeApi: DummyRecipeApi): RecipeApi = dummyRecipeApi
 }
